@@ -25,8 +25,8 @@ class _HomePageState extends State<HomePage> {
   String? _errorMessage;
   
   // URL: Ensure this is your laptop IP and the server is running!
-  final String _devicesApiUrl = 'http://192.168.0.206:3000/getDevices';
-  final String _changePowerApiUrl = 'http://192.168.0.206:3000/changeDevicePower';
+  final String _devicesApiUrl = 'http://..../getDevices';
+  final String _changePowerApiUrl = 'http://...../changeDevicePower';
 
   @override
   void initState() {
