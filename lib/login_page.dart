@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       // Use your local IP or 10.0.2.2 for Android Emulator
-      final url = Uri.parse('http://192.168.0.65:3000/login'); 
+      final url = Uri.parse('http://192.168.0.206:3000/login'); 
       
       final response = await http.post(
         url,

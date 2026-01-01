@@ -25,7 +25,8 @@ class _HomePageState extends State<HomePage> {
   String? _errorMessage;
   
   // URL: Ensure this is your laptop IP and the server is running!
-  final String _devicesApiUrl = 'http://192.168.0.65:3000/getDevices';
+  final String _devicesApiUrl = 'http://192.168.0.206:3000/getDevices';
+  final String _changePowerApiUrl = 'http://192.168.0.206:3000/changeDevicePower';
 
   @override
   void initState() {
@@ -85,6 +86,52 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> changeDevicePowerStatus( String title, bool power ) async {
+     if (!mounted) return;
+    
+    setState(() {
+
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final userId = context.read<UserSession>().userId;
+      final wifiName = context.read<UserSession>().wifiName;
+      
+      final response = await http.post(
+        Uri.parse(_changePowerApiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'id': userId,
+          'name': title,
+          'power': power,
+          'wifi': wifiName
+          }),
+      ).timeout(const Duration(seconds: 10));
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _errorMessage = "Server Error: ${response.statusCode}";
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        _errorMessage = "Connection Failed. Is the server running?";
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,19 +159,16 @@ class _HomePageState extends State<HomePage> {
   Widget _buildClickableDeviceCard(Device d) {
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16, top: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           // 1. Update the UI immediately
+          changeDevicePowerStatus(d.title, !d.powerOn);
           setState(() {
             d.powerOn = !d.powerOn;
           });
-          
-          // 2. Send the update to the server
-          // Note: Ensure your postDeviceStatus function is accessible here
-          //_updateDeviceOnServer(d.title, d.powerOn);
         },
         child: Padding(
           padding: const EdgeInsets.all(16),

@@ -32,7 +32,7 @@ class _WifiInfoPageState extends State<WifiInfoPage> {
   // List of WiFi items retrieved from server
   List<WifiInfo> wifiList = [];
 
-  final String _apiUrl = 'http://192.168.0.65:3000/getWifiInfo';
+  final String _apiUrl = 'http://192.168.0.206:3000/getWifiInfo';
 
   @override
   void initState() {
